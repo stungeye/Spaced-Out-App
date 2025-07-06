@@ -80,7 +80,7 @@ When installing shadcn components use:
 
 ```
 // The location of a single card
-type CardLocation = 'Deck Current' | 'Deck Retired' | '0-2-5-9' | '1-3-6-0' | '2-4-7-1' | '3-5-8-2' | '4-6-9-3' | '5-7-0-4' | '6-8-1-5' | '7-9-2-6' | '8-0-3-7' | '9-1-4-8';
+type CardLocation = 'Deck New' | 'Deck Current' | 'Deck Retired' | '0-2-5-9' | '1-3-6-0' | '2-4-7-1' | '3-5-8-2' | '4-6-9-3' | '5-7-0-4' | '6-8-1-5' | '7-9-2-6' | '8-0-3-7' | '9-1-4-8';
 
 // Base structure for any card
 interface Card {
@@ -212,36 +212,31 @@ App
 
 ## 6\. Feature Implementation Guide
 
-### Step 1: Project Setup
+### Step 1: Project Setup (Completed)
 
-This is already complete:
+- [x] Initialize a new project using Vite.
+- [x] Install dependencies.
+- [x] Initialize Tailwind CSS.
+- [x] Configure `tailwind.config.js` and `index.css`.
+- [x] Install and configure Shadcn/ui.
 
-1.  Initialize a new project using Vite: `npm create vite@latest my-flashcard-app -- --template react-ts`.
-2.  Install dependencies: `npm install react-router-dom tailwindcss postcss autoprefixer clsx tailwind-merge`.
-3.  Initialize Tailwind CSS: `npx tailwindcss init -p`.
-4.  Configure `tailwind.config.js` and `index.css`.
-5.  Install and configure Shadcn/ui according to its official documentation.
+### Step 2: Data Models & State (Completed)
 
-### Step 2: Data Models & State
+- [x] Create a `types.ts` file and define all the TypeScript interfaces.
+- [x] Create a `LearnerContext.tsx` with context, provider, and reducer logic.
+- [x] Implement `localStorage` persistence within the context provider.
 
-1.  Create a `types.ts` file and define all the TypeScript interfaces from section 4.1.
-2.  Create a `LearnerContext.tsx`. This will initialize the context, provide the state, and include reducer logic for all state modifications (e.g., `ADD_LEARNER`, `UPDATE_CARD_LOCATION`, `SET_SESSION_INDEX`).
-3.  Implement the `localStorage` persistence within the context provider. Use a `useEffect` hook to save the state to `localStorage` whenever it changes.
+### Step 3: Routing & Core UI (Completed)
 
-### Step 3: Routing & Core UI
+- [x] Set up `react-router-dom` in `App.tsx`.
+- [x] Create the `LearnerSelectionScreen`.
+- [x] Create the `MainAppLayout`.
+- [x] Build the `Dashboard` component.
 
-1.  Set up `react-router-dom` in `App.tsx`.
-2.  Create the `LearnerSelectionScreen` as the root path. This screen should list existing learners from the context or show a form to create a new one.
-3.  Create the `MainAppLayout` which will be the parent for all screens once a learner is selected.
-4.  Build the `Dashboard` component to display a list of the active learner's decks.
+### Step 4: Leitner System Logic (Completed)
 
-### Step 4: Leitner System Logic
-
-1.  Create a file `lib/leitner.ts`.
-2.  Implement the pure functions for the spaced repetition logic described in section 2.1.
-    - `getDueCards(decks: Deck[], sessionIndex: number): AnyCard[]`
-    - `buildSessionQueue(dueCards: AnyCard[], allCards: AnyCard[], quota: number): AnyCard[]`
-    - `gradeCard(card: AnyCard, isCorrect: boolean, sessionIndex: number): CardLocation` (returns the new location for the card)
+- [x] Create a file `lib/leitner.ts`.
+- [x] Implement the pure functions for the spaced repetition logic (`getDueCards`, `gradeCard`).
 
 ### Step 5: Session Flow
 
