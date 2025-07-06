@@ -5,7 +5,14 @@ import React, {
   type ReactNode,
   useContext,
 } from "react";
-import type { AppState, LearnerState, CardLocation, Deck } from "../lib/types";
+import type {
+  AppState,
+  LearnerState,
+  CardLocation,
+  Deck,
+  RawDeck,
+  AnyCard,
+} from "../lib/types";
 
 // Define actions
 type Action =
@@ -28,7 +35,7 @@ type Action =
         newLocation: CardLocation;
       };
     }
-  | { type: "ADD_DECK"; payload: { learnerId: string; deck: Deck } };
+  | { type: "ADD_DECK"; payload: { learnerId: string; deck: RawDeck } };
 
 // Reducer function
 const appReducer = (state: AppState, action: Action): AppState => {
@@ -111,7 +118,7 @@ const appReducer = (state: AppState, action: Action): AppState => {
           deckId: deck.id,
           type: deck.type, // This was the missing piece
           location: "Deck New",
-        })),
+        })) as AnyCard[],
       };
 
       return {

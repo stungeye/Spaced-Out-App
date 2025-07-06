@@ -46,7 +46,12 @@ export interface Deck {
   id: string;
   name: string;
   type: "math" | "spelling";
-  cards: AnyCard[] | RawCard[];
+  cards: AnyCard[];
+}
+
+// A deck that has not yet been processed.
+export interface RawDeck extends Omit<Deck, "cards"> {
+  cards: RawCard[];
 }
 
 // State for a single learner

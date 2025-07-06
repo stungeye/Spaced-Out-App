@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useLearnerContext } from "@/context/LearnerContext";
 import { getDueCards, buildSessionQueue } from "@/lib/leitner";
-import type { Deck } from "@/lib/types";
+import type { Deck, AnyCard } from "@/lib/types";
 import { useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -42,9 +42,12 @@ export default function SessionSetupModal({
   }, [deck, learner]);
 
   const { sessionQueue, newCardsAdded } = useMemo(() => {
-    if (!deck) return { sessionQueue: [], newCardsAdded: [] };
-    return buildSessionQueue(dueCards, deck.cards, selectedQuota);
-  }, [dueCards, deck, selectedQuota]);
+    if (!deck || !learner) return { sessionQueue: [], newCardsAdded: [] };
+
+    const allCards = deck.cards as AnyCard[];
+    const due = getDueCards([deck], learner.sessionIndex);
+    return buildSessionQueue(due, allCards, selectedQuota);
+  }, [deck, learner, selectedQuota]);
 
   const handleStartSession = () => {
     if (!deck || !learner || sessionQueue.length === 0) return;

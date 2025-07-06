@@ -1,7 +1,7 @@
 import { useLearnerContext } from "@/context/LearnerContext";
 import { useParams } from "react-router-dom";
 import { useState, useMemo } from "react";
-import type { Deck } from "@/lib/types";
+import type { Deck, AnyCard, CardLocation } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import SessionSetupModal from "@/components/SessionSetupModal";
 
@@ -99,6 +99,22 @@ export default function Dashboard() {
               <p className="text-sm text-muted-foreground mb-4">
                 {deck.cards.length} cards
               </p>
+
+              <div className="text-xs text-muted-foreground mb-4">
+                <h4 className="font-semibold">Distribution:</h4>
+                <pre className="text-xs overflow-auto">
+                  {JSON.stringify(
+                    (deck.cards as AnyCard[]).reduce((acc, card) => {
+                      const location = card.location;
+                      acc[location] = (acc[location] || 0) + 1;
+                      return acc;
+                    }, {} as Record<CardLocation, number>),
+                    null,
+                    2
+                  )}
+                </pre>
+              </div>
+
               <Button onClick={() => handleOpenModal(deck)}>
                 Start Session
               </Button>
