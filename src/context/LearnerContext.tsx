@@ -102,11 +102,23 @@ const appReducer = (state: AppState, action: Action): AppState => {
       };
     }
     case "ADD_DECK": {
+      const { learnerId, deck } = action.payload;
+      const processedDeck: Deck = {
+        ...deck,
+        cards: deck.cards.map((card) => ({
+          ...card,
+          id: `card-${Math.random().toString(36).substr(2, 9)}-${Date.now()}`,
+          deckId: deck.id,
+          type: deck.type, // This was the missing piece
+          location: "Deck New",
+        })),
+      };
+
       return {
         ...state,
         learners: state.learners.map((learner) =>
-          learner.id === action.payload.learnerId
-            ? { ...learner, decks: [...learner.decks, action.payload.deck] }
+          learner.id === learnerId
+            ? { ...learner, decks: [...learner.decks, processedDeck] }
             : learner
         ),
       };

@@ -1,0 +1,14 @@
+{
+  "id": "math-mult-01",
+  "name": "Multiplication Facts (1-12)",
+  "type": "math",
+  "cards": [
+    { "question": "2 * 2", "answer": "4" },
+    { "question": "2 * 3", "answer": "6" },
+    { "question": "7 * 8", "answer": "56" },
+    { "question": "3 * 9", "answer": "27" },
+    { "question": "4 * 5", "answer": "20" },
+    { "question": "6 * 6", "answer": "36" },
+    { "question": "12 * 12", "answer": "144" }
+  ]
+}

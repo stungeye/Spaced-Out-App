@@ -38,12 +38,15 @@ export interface SpellingCard extends Card {
 
 export type AnyCard = MathCard | SpellingCard;
 
+// Used when loading a deck from JSON, before cards are processed
+export type RawCard = Omit<AnyCard, "id" | "location" | "deckId" | "type">;
+
 // Structure for a deck of cards
 export interface Deck {
   id: string;
   name: string;
   type: "math" | "spelling";
-  cards: AnyCard[];
+  cards: AnyCard[] | RawCard[];
 }
 
 // State for a single learner

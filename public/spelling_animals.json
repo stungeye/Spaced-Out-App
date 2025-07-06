@@ -1,0 +1,27 @@
+{
+  "id": "spell-animals-01",
+  "name": "Animal Spelling",
+  "type": "spelling",
+  "cards": [
+    {
+      "answer": "elephant",
+      "definition": "A very large gray mammal with a trunk.",
+      "sentence": "The _____ sprayed water with its long trunk."
+    },
+    {
+      "answer": "giraffe",
+      "definition": "A tall African mammal with a very long neck.",
+      "sentence": "The _____ could reach the highest leaves on the tree."
+    },
+    {
+      "answer": "tiger",
+      "definition": "A large carnivorous feline with a striped coat.",
+      "sentence": "The _____ is the biggest cat in the world."
+    },
+    {
+      "answer": "penguin",
+      "definition": "A flightless bird found in the Antarctic.",
+      "sentence": "The _____ waddled across the ice."
+    }
+  ]
+}

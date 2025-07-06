@@ -238,14 +238,14 @@ App
 - [x] Create a file `lib/leitner.ts`.
 - [x] Implement the pure functions for the spaced repetition logic (`getDueCards`, `gradeCard`).
 
-### Step 5: Session Flow
+### Step 5: Session Flow (In Progress)
 
 1.  On the `Dashboard`, clicking a "Start Session" button on a deck should open the `SessionSetupModal`.
 2.  The modal should display the number of due cards for that deck and allow the user to select a quota.
 3.  On confirmation, use the `leitner.ts` functions to build the queue, store it in a temporary session state, and navigate the user to the `/session` route.
 4.  The `SessionView` component will then iterate through the session queue, one card at a time.
 
-### Step 6: Card Presentation & Custom Inputs
+### Step 6: Card Presentation & Custom Inputs (In Progress)
 
 1.  Build the `CardPresenter` component. It will receive a card object and use a conditional or switch statement on `card.type` to render either a `MathCardView` or a `SpellingCardView`.
 2.  **`SpellingCardView`:**
@@ -256,15 +256,15 @@ App
     - The parent `SessionView` will manage the input state (a string). The keyboard components will call back to the parent to update this state (e.g., `onKeyPress(key: string)`).
     - The "submit" button will trigger the answer check.
 
-### Step 7: Feedback & Audio
+### Step 7: Feedback & Audio (In Progress)
 
 1.  After an answer is submitted, compare it to the `card.answer`.
 2.  Use the `leitner.ts#gradeCard` function to determine the card's new location and update the global state.
-3.  Play the appropriate sound (`success.mp3` or `error.mp3`). You can use the `new Audio('/path/to/sound.mp3').play()` browser API.
+3.  Play the appropriate sound using the `playSound` function found in the `lib\playSound.ts` file..
 4.  Briefly show a visual indicator (e.g., a green checkmark or red X overlay).
 5.  Automatically advance to the next card in the queue after a short delay (e.g., 1-1.5 seconds).
 
-### Step 8: Finishing Touches
+### Step 8: Finishing Touches (Not Started)
 
 1.  Implement the `StatsDisplay` to show the running count of correct answers and the best streak for the current session.
 2.  Build the `SettingsPage` with the `BackupRestoreControls`. Use an invisible `<input type="file">` for the restore functionality and a dynamically created `<a>` tag for the download/backup.
@@ -278,3 +278,7 @@ App
 - **Error Handling:** Wrap TTS speech synthesis in a `try...catch` block as it can sometimes fail.
 - **Code Organization:** Keep related files together (e.g., a component and its associated CSS module). Use a `lib` or `utils` directory for shared logic like the Leitner system.
 - **Comments:** Add comments to explain the "why" behind complex code, especially for the Leitner system implementation and state management logic.
+
+## 8\. Notes on Card ID and Location Assignment
+
+When a deck is first loaded from a JSON file, each card within it should be assigned a unique `id` (e.g., using a UUID library) and its `location` should be initialized to `'Deck New'`. The `deckId` from the parent deck should also be added to each card object.
