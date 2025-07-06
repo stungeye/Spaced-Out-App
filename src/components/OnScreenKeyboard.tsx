@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ArrowLeftIcon } from "@radix-ui/react-icons";
 
 interface OnScreenKeyboardProps {
   onKeyPress: (key: string) => void;
@@ -36,7 +37,7 @@ const OnScreenKeyboard = ({ onKeyPress, onSubmit }: OnScreenKeyboardProps) => {
           variant="outline"
           className="h-12 w-20 uppercase"
         >
-          Bksp
+          <ArrowLeftIcon className="h-8 w-8" />
         </Button>
       </div>
       <Button onClick={onSubmit} className="h-12 w-full max-w-sm mt-2 text-xl">
