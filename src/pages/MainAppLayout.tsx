@@ -11,10 +11,17 @@ function Header() {
     <header className="p-4 bg-card shadow-sm">
       <div className="container mx-auto flex justify-between items-center">
         <h1 className="text-2xl font-bold">
-          <Link to={`/${learnerId}/dashboard`}>Spaced Out</Link>
+          <Link to="/">Spaced Out</Link>
         </h1>
         <div className="flex items-center gap-4">
-          {learner && <div className="text-lg">{learner.name}</div>}
+          {learner && (
+            <Link
+              to={`/${learnerId}/dashboard`}
+              className="text-lg hover:underline"
+            >
+              {learner.name}
+            </Link>
+          )}
           <Link
             to={`/${learnerId}/settings`}
             className="text-lg hover:underline"
