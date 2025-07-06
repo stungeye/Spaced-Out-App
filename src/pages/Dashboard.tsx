@@ -99,6 +99,9 @@ export default function Dashboard() {
               <p className="text-sm text-muted-foreground mb-4">
                 {deck.cards.length} cards
               </p>
+              <p className="text-sm text-muted-foreground">
+                Current Session Index: {deck.sessionIndex}
+              </p>
 
               <div className="text-xs text-muted-foreground mb-4">
                 <h4 className="font-semibold">Distribution:</h4>
@@ -106,9 +109,14 @@ export default function Dashboard() {
                   {JSON.stringify(
                     (deck.cards as AnyCard[]).reduce((acc, card) => {
                       const location = card.location;
-                      acc[location] = (acc[location] || 0) + 1;
+                      if (!acc[location]) {
+                        acc[location] = [];
+                      }
+                      const cardIdentifier =
+                        card.type === "math" ? card.question : card.answer;
+                      acc[location].push(cardIdentifier);
                       return acc;
-                    }, {} as Record<CardLocation, number>),
+                    }, {} as Record<CardLocation, string[]>),
                     null,
                     2
                   )}

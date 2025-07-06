@@ -15,9 +15,14 @@ const SessionView = () => {
   const { state: appState, dispatch } = useLearnerContext();
 
   // The queue and deckName are passed in the navigation state from SessionSetupModal
-  const { queue: sessionQueue, deckName } = location.state || {
+  const {
+    queue: sessionQueue,
+    deckName,
+    deckId,
+  } = location.state || {
     queue: [],
     deckName: "",
+    deckId: "",
   };
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -41,6 +46,7 @@ const SessionView = () => {
   }
 
   const learner = appState.learners.find((l) => l.id === learnerId);
+  const deck = learner?.decks.find((d) => d.id === deckId);
 
   const handleKeyPress = (key: string) => {
     if (key === "backspace") {
@@ -51,7 +57,7 @@ const SessionView = () => {
   };
 
   const handleSubmit = () => {
-    if (!learner || feedbackStatus) return; // Prevent submission while feedback is showing
+    if (!learner || !deck || feedbackStatus) return; // Prevent submission while feedback is showing
 
     const card = sessionQueue[currentIndex];
     const isCorrect =
@@ -60,7 +66,7 @@ const SessionView = () => {
     playSound(isCorrect);
     setFeedbackStatus(isCorrect ? "correct" : "incorrect");
 
-    const newLocation = gradeCard(card, isCorrect, learner.sessionIndex);
+    const newLocation = gradeCard(card, isCorrect, deck.sessionIndex);
 
     dispatch({
       type: "UPDATE_CARD_LOCATIONS",
@@ -78,6 +84,16 @@ const SessionView = () => {
         setCurrentIndex(currentIndex + 1);
       } else {
         // Session finished
+        if (learner) {
+          dispatch({
+            type: "SET_SESSION_INDEX",
+            payload: {
+              learnerId: learner.id,
+              deckId: deck.id,
+              sessionIndex: (deck.sessionIndex + 1) % 10,
+            },
+          });
+        }
         navigate(`/${learnerId}/dashboard`);
       }
     }, 1500); // 1.5s delay to show feedback

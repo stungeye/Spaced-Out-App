@@ -46,11 +46,12 @@ export interface Deck {
   id: string;
   name: string;
   type: "math" | "spelling";
+  sessionIndex: number; // The 'S' value, 0-9
   cards: AnyCard[];
 }
 
 // A deck that has not yet been processed.
-export interface RawDeck extends Omit<Deck, "cards"> {
+export interface RawDeck extends Omit<Deck, "cards" | "sessionIndex"> {
   cards: RawCard[];
 }
 
@@ -58,7 +59,6 @@ export interface RawDeck extends Omit<Deck, "cards"> {
 export interface LearnerState {
   id: string;
   name: string;
-  sessionIndex: number; // The 'S' value, 0-9
   decks: Deck[];
 }
 

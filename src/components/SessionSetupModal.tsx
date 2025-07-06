@@ -37,17 +37,17 @@ export default function SessionSetupModal({
   );
 
   const dueCards = useMemo(() => {
-    if (!deck || !learner) return [];
-    return getDueCards([deck], learner.sessionIndex);
-  }, [deck, learner]);
+    if (!deck) return [];
+    return getDueCards([deck], deck.sessionIndex);
+  }, [deck]);
 
   const { sessionQueue, newCardsAdded } = useMemo(() => {
-    if (!deck || !learner) return { sessionQueue: [], newCardsAdded: [] };
+    if (!deck) return { sessionQueue: [], newCardsAdded: [] };
 
     const allCards = deck.cards as AnyCard[];
-    const due = getDueCards([deck], learner.sessionIndex);
+    const due = getDueCards([deck], deck.sessionIndex);
     return buildSessionQueue(due, allCards, selectedQuota);
-  }, [deck, learner, selectedQuota]);
+  }, [deck, selectedQuota]);
 
   const handleStartSession = () => {
     if (!deck || !learner || sessionQueue.length === 0) return;
@@ -65,7 +65,7 @@ export default function SessionSetupModal({
 
     // Navigate to the session view, passing the queue in the route's state
     navigate(`/${learner.id}/session`, {
-      state: { queue: sessionQueue, deckName: deck.name },
+      state: { queue: sessionQueue, deckName: deck.name, deckId: deck.id },
     });
   };
 

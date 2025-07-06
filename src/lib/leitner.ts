@@ -119,7 +119,7 @@ export function gradeCard(
   const sessionDigit = String(sessionIndex);
 
   if (isCorrect) {
-    if (currentLoc === "Deck Current") {
+    if (currentLoc === "Deck Current" || currentLoc === "Deck New") {
       // Correctly answered card from the current deck moves to the first box corresponding to the session index.
       const targetBox = LEITNER_BOXES.find((box) =>
         box.startsWith(sessionDigit)

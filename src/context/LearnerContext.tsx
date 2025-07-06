@@ -21,7 +21,7 @@ type Action =
   | { type: "SET_ACTIVE_LEARNER"; payload: string | null }
   | {
       type: "SET_SESSION_INDEX";
-      payload: { learnerId: string; sessionIndex: number };
+      payload: { learnerId: string; deckId: string; sessionIndex: number };
     }
   | {
       type: "UPDATE_CARD_LOCATION";
@@ -57,11 +57,17 @@ const appReducer = (state: AppState, action: Action): AppState => {
         activeLearnerId: action.payload,
       };
     case "SET_SESSION_INDEX": {
+      const { learnerId, deckId, sessionIndex } = action.payload;
       return {
         ...state,
         learners: state.learners.map((learner) =>
-          learner.id === action.payload.learnerId
-            ? { ...learner, sessionIndex: action.payload.sessionIndex }
+          learner.id === learnerId
+            ? {
+                ...learner,
+                decks: learner.decks.map((deck) =>
+                  deck.id === deckId ? { ...deck, sessionIndex } : deck
+                ),
+              }
             : learner
         ),
       };
@@ -112,6 +118,7 @@ const appReducer = (state: AppState, action: Action): AppState => {
       const { learnerId, deck } = action.payload;
       const processedDeck: Deck = {
         ...deck,
+        sessionIndex: 0,
         cards: deck.cards.map((card) => ({
           ...card,
           id: `card-${Math.random().toString(36).substr(2, 9)}-${Date.now()}`,
