@@ -111,6 +111,7 @@ interface Deck {
   id: string;
   name: string;
   type: 'math' | 'spelling';
+  sessionIndex: number; // The 'S' value, 0-9
   cards: AnyCard[];
 }
 
@@ -118,7 +119,6 @@ interface Deck {
 interface LearnerState {
   id: string;
   name: string;
-  sessionIndex: number; // The 'S' value, 0-9
   decks: Deck[];
 }
 
