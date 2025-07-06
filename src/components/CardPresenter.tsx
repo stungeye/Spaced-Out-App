@@ -1,4 +1,6 @@
 import type { AnyCard } from "@/lib/types";
+import MathCardView from "./MathCardView";
+import SpellingCardView from "./SpellingCardView";
 
 interface CardPresenterProps {
   card: AnyCard;
@@ -7,11 +9,9 @@ interface CardPresenterProps {
 const CardPresenter = ({ card }: CardPresenterProps) => {
   switch (card.type) {
     case "math":
-      // return <MathCardView card={card} />;
-      return <div>{card.question}</div>;
+      return <MathCardView card={card} />;
     case "spelling":
-      // return <SpellingCardView card={card} />;
-      return <div>{card.definition}</div>;
+      return <SpellingCardView card={card} />;
     default:
       return <div>Unknown card type</div>;
   }
