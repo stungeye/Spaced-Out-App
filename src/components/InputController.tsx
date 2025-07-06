@@ -8,7 +8,11 @@ interface InputControllerProps {
   onSubmit: () => void;
 }
 
-const InputController = ({ cardType, onKeyPress, onSubmit }: InputControllerProps) => {
+const InputController = ({
+  cardType,
+  onKeyPress,
+  onSubmit,
+}: InputControllerProps) => {
   if (cardType === "math") {
     return <NumericKeypad onKeyPress={onKeyPress} onSubmit={onSubmit} />;
   }
