@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { AnyCard } from "@/lib/types";
 import { useLearnerContext } from "@/context/LearnerContext";
 import { gradeCard } from "@/lib/leitner";
@@ -35,13 +35,22 @@ const SessionView = () => {
   const [incorrectCount, setIncorrectCount] = useState(0);
   const [streak, setStreak] = useState(0);
   const [maxStreak, setMaxStreak] = useState(0);
-  const [showIncorrectAnswer, setShowIncorrectAnswer] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (streak > maxStreak) {
       setMaxStreak(streak);
     }
   }, [streak, maxStreak]);
+
+  useEffect(() => {
+    // Clear timeout on component unmount
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   if (!sessionQueue || sessionQueue.length === 0) {
     return (
@@ -68,6 +77,31 @@ const SessionView = () => {
     }
   };
 
+  const advanceToNextCard = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setCurrentAnswer("");
+    setFeedbackStatus(null);
+    if (currentIndex < sessionQueue.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      // Session finished
+      if (learner && deck) {
+        dispatch({
+          type: "SET_SESSION_INDEX",
+          payload: {
+            learnerId: learner.id,
+            deckId: deck.id,
+            sessionIndex: (deck.sessionIndex + 1) % 10,
+          },
+        });
+      }
+      navigate(`/${learnerId}/dashboard`);
+    }
+  };
+
   const handleSubmit = () => {
     if (!learner || !deck || feedbackStatus) return; // Prevent submission while feedback is showing
 
@@ -84,7 +118,6 @@ const SessionView = () => {
     } else {
       setIncorrectCount(incorrectCount + 1);
       setStreak(0);
-      setShowIncorrectAnswer(true);
     }
 
     const newLocation = gradeCard(card, isCorrect, deck.sessionIndex);
@@ -98,27 +131,13 @@ const SessionView = () => {
       },
     });
 
-    setTimeout(() => {
-      setCurrentAnswer("");
-      setFeedbackStatus(null);
-      setShowIncorrectAnswer(false);
-      if (currentIndex < sessionQueue.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-      } else {
-        // Session finished
-        if (learner) {
-          dispatch({
-            type: "SET_SESSION_INDEX",
-            payload: {
-              learnerId: learner.id,
-              deckId: deck.id,
-              sessionIndex: (deck.sessionIndex + 1) % 10,
-            },
-          });
-        }
-        navigate(`/${learnerId}/dashboard`);
-      }
-    }, 1500); // 1.5s delay to show feedback
+    if (isCorrect) {
+      timeoutRef.current = setTimeout(advanceToNextCard, 2000); // 2s delay
+    } else {
+      // For incorrect answers, the overlay is dismissible via click,
+      // but we also set a long timeout as a fallback.
+      timeoutRef.current = setTimeout(advanceToNextCard, 15000); // 15s delay
+    }
   };
 
   const currentCard: AnyCard = sessionQueue[currentIndex];
@@ -141,16 +160,15 @@ const SessionView = () => {
 
       <main className="relative flex-grow flex flex-col items-center justify-center w-full">
         <CardPresenter card={currentCard} />
-        {showIncorrectAnswer && (
-          <div className="absolute text-center p-4 bg-red-100 rounded-lg">
-            <p className="text-red-700 font-bold">Correct Answer:</p>
-            <p className="text-2xl">{currentCard.answer}</p>
-          </div>
-        )}
         <div className="mt-8 h-16 w-full max-w-sm bg-slate-100 rounded-lg flex items-center justify-center text-3xl font-mono">
           {currentAnswer || " "}
         </div>
-        <FeedbackOverlay status={feedbackStatus} />
+        <FeedbackOverlay
+          status={feedbackStatus}
+          card={currentCard}
+          userAnswer={currentAnswer}
+          onDismiss={advanceToNextCard}
+        />
       </main>
 
       <footer className="w-full mt-4">

@@ -1,5 +1,6 @@
 import { useLearnerContext } from "@/context/LearnerContext";
 import { useRef } from "react";
+import { Button } from "@/components/ui/button";
 
 const BackupRestoreControls = () => {
   const { state: appState, dispatch } = useLearnerContext();
@@ -51,18 +52,10 @@ const BackupRestoreControls = () => {
         Save your current progress to a file or restore from a backup.
       </p>
       <div className="flex gap-4">
-        <button
-          onClick={handleBackup}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Backup
-        </button>
-        <button
-          onClick={handleRestoreClick}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-        >
+        <Button onClick={handleBackup}>Backup</Button>
+        <Button onClick={handleRestoreClick} variant="secondary">
           Restore
-        </button>
+        </Button>
         <input
           type="file"
           ref={fileInputRef}

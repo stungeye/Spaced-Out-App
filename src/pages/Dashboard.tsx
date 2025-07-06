@@ -38,20 +38,9 @@ export default function Dashboard() {
         deckData.type &&
         Array.isArray(deckData.cards)
       ) {
-        const newDeck: Deck = {
-          id: deckData.id,
-          name: deckData.name,
-          type: deckData.type,
-          cards: deckData.cards.map((c: any, index: number) => ({
-            ...c,
-            id: `${deckData.id}-card-${index}`,
-            location: "Deck New",
-            deckId: deckData.id,
-          })),
-        };
         dispatch({
           type: "ADD_DECK",
-          payload: { learnerId: learner.id, deck: newDeck },
+          payload: { learnerId: learner.id, deck: deckData },
         });
       } else {
         alert("Invalid deck file format.");
