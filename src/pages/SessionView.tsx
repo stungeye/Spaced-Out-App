@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { AnyCard } from "@/lib/types";
 import { useLearnerContext } from "@/context/LearnerContext";
 import { gradeCard } from "@/lib/leitner";
@@ -7,6 +7,7 @@ import { playSound } from "@/lib/playSound";
 import CardPresenter from "@/components/CardPresenter";
 import InputController from "@/components/InputController";
 import FeedbackOverlay from "@/components/FeedbackOverlay";
+import StatsDisplay from "@/components/StatsDisplay";
 
 const SessionView = () => {
   const location = useLocation();
@@ -30,6 +31,17 @@ const SessionView = () => {
   const [feedbackStatus, setFeedbackStatus] = useState<
     "correct" | "incorrect" | null
   >(null);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [incorrectCount, setIncorrectCount] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [maxStreak, setMaxStreak] = useState(0);
+  const [showIncorrectAnswer, setShowIncorrectAnswer] = useState(false);
+
+  useEffect(() => {
+    if (streak > maxStreak) {
+      setMaxStreak(streak);
+    }
+  }, [streak, maxStreak]);
 
   if (!sessionQueue || sessionQueue.length === 0) {
     return (
@@ -66,6 +78,15 @@ const SessionView = () => {
     playSound(isCorrect);
     setFeedbackStatus(isCorrect ? "correct" : "incorrect");
 
+    if (isCorrect) {
+      setCorrectCount(correctCount + 1);
+      setStreak(streak + 1);
+    } else {
+      setIncorrectCount(incorrectCount + 1);
+      setStreak(0);
+      setShowIncorrectAnswer(true);
+    }
+
     const newLocation = gradeCard(card, isCorrect, deck.sessionIndex);
 
     dispatch({
@@ -80,6 +101,7 @@ const SessionView = () => {
     setTimeout(() => {
       setCurrentAnswer("");
       setFeedbackStatus(null);
+      setShowIncorrectAnswer(false);
       if (currentIndex < sessionQueue.length - 1) {
         setCurrentIndex(currentIndex + 1);
       } else {
@@ -107,6 +129,11 @@ const SessionView = () => {
         <h1 className="text-2xl font-bold mb-2 text-center">
           Session: {deckName}
         </h1>
+        <StatsDisplay
+          correct={correctCount}
+          incorrect={incorrectCount}
+          streak={maxStreak}
+        />
         <p className="mb-4 text-muted-foreground text-center">
           Card {currentIndex + 1} of {sessionQueue.length}
         </p>
@@ -114,6 +141,12 @@ const SessionView = () => {
 
       <main className="relative flex-grow flex flex-col items-center justify-center w-full">
         <CardPresenter card={currentCard} />
+        {showIncorrectAnswer && (
+          <div className="absolute text-center p-4 bg-red-100 rounded-lg">
+            <p className="text-red-700 font-bold">Correct Answer:</p>
+            <p className="text-2xl">{currentCard.answer}</p>
+          </div>
+        )}
         <div className="mt-8 h-16 w-full max-w-sm bg-slate-100 rounded-lg flex items-center justify-center text-3xl font-mono">
           {currentAnswer || " "}
         </div>

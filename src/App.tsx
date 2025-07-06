@@ -3,6 +3,7 @@ import LearnerSelectionScreen from "@/pages/LearnerSelectionScreen";
 import MainAppLayout from "@/pages/MainAppLayout";
 import Dashboard from "@/pages/Dashboard";
 import SessionView from "@/pages/SessionView";
+import SettingsPage from "@/pages/SettingsPage";
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
       <Route path="/:learnerId/*" element={<MainAppLayout />}>
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="session" element={<SessionView />} />
-        {/* Other nested routes like settings will go here */}
+        <Route path="settings" element={<SettingsPage />} />
       </Route>
     </Routes>
   );

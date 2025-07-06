@@ -238,14 +238,14 @@ App
 - [x] Create a file `lib/leitner.ts`.
 - [x] Implement the pure functions for the spaced repetition logic (`getDueCards`, `gradeCard`).
 
-### Step 5: Session Flow (In Progress)
+### Step 5: Session Flow (Completed)
 
 1.  On the `Dashboard`, clicking a "Start Session" button on a deck should open the `SessionSetupModal`.
 2.  The modal should display the number of due cards for that deck and allow the user to select a quota.
 3.  On confirmation, use the `leitner.ts` functions to build the queue, store it in a temporary session state, and navigate the user to the `/session` route.
 4.  The `SessionView` component will then iterate through the session queue, one card at a time.
 
-### Step 6: Card Presentation & Custom Inputs (In Progress)
+### Step 6: Card Presentation & Custom Inputs (Completed)
 
 1.  Build the `CardPresenter` component. It will receive a card object and use a conditional or switch statement on `card.type` to render either a `MathCardView` or a `SpellingCardView`.
 2.  **`SpellingCardView`:**
@@ -256,7 +256,7 @@ App
     - The parent `SessionView` will manage the input state (a string). The keyboard components will call back to the parent to update this state (e.g., `onKeyPress(key: string)`).
     - The "submit" button will trigger the answer check.
 
-### Step 7: Feedback & Audio (In Progress)
+### Step 7: Feedback & Audio (Completed)
 
 1.  After an answer is submitted, compare it to the `card.answer`.
 2.  Use the `leitner.ts#gradeCard` function to determine the card's new location and update the global state.
@@ -264,11 +264,12 @@ App
 4.  Briefly show a visual indicator (e.g., a green checkmark or red X overlay).
 5.  Automatically advance to the next card in the queue after a short delay (e.g., 1-1.5 seconds).
 
-### Step 8: Finishing Touches (Not Started)
+### Step 8: Finishing Touches (Completed)
 
-1.  Implement the `StatsDisplay` to show the running count of correct answers and the best streak for the current session.
-2.  Build the `SettingsPage` with the `BackupRestoreControls`. Use an invisible `<input type="file">` for the restore functionality and a dynamically created `<a>` tag for the download/backup.
-3.  Ensure the entire application is responsive and looks good on both desktop and mobile devices.
+- [x] Implement the `StatsDisplay` to show the running count of correct answers and the best streak for the current session.
+- [x] Build the `SettingsPage` with the `BackupRestoreControls`. Use an invisible `<input type="file">` for the restore functionality and a dynamically created `<a>` tag for the download/backup.
+- [x] When cards are answered incorrectly the user should be shown the question along with the correct answer.
+- [x] Ensure the entire application is responsive and looks good on both desktop and mobile devices.
 
 ## 7\. Best Practices to Follow
 

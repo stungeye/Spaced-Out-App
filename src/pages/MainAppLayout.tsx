@@ -1,4 +1,4 @@
-import { Outlet, useParams } from "react-router-dom";
+import { Outlet, useParams, Link } from "react-router-dom";
 import { useLearnerContext } from "@/context/LearnerContext";
 
 function Header() {
@@ -10,8 +10,18 @@ function Header() {
   return (
     <header className="p-4 bg-card shadow-sm">
       <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Spaced Out</h1>
-        {learner && <div className="text-lg">{learner.name}</div>}
+        <h1 className="text-2xl font-bold">
+          <Link to={`/${learnerId}/dashboard`}>Spaced Out</Link>
+        </h1>
+        <div className="flex items-center gap-4">
+          {learner && <div className="text-lg">{learner.name}</div>}
+          <Link
+            to={`/${learnerId}/settings`}
+            className="text-lg hover:underline"
+          >
+            Settings
+          </Link>
+        </div>
       </div>
     </header>
   );
@@ -19,9 +29,9 @@ function Header() {
 
 export default function MainAppLayout() {
   return (
-    <div>
+    <div className="flex flex-col h-screen">
       <Header />
-      <main>
+      <main className="flex-grow p-4">
         <Outlet />
       </main>
     </div>

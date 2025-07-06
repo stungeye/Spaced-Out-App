@@ -1,5 +1,5 @@
 import { useLearnerContext } from "@/context/LearnerContext";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -7,6 +7,7 @@ export default function LearnerSelectionScreen() {
   const { state, dispatch } = useLearnerContext();
   const [newLearnerName, setNewLearnerName] = useState("");
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAddLearner = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +25,32 @@ export default function LearnerSelectionScreen() {
   const selectLearner = (learnerId: string) => {
     dispatch({ type: "SET_ACTIVE_LEARNER", payload: learnerId });
     navigate(`/${learnerId}/dashboard`);
+  };
+
+  const handleRestoreClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target?.result;
+        if (typeof text === "string") {
+          const restoredState = JSON.parse(text);
+          // TODO: Add validation to ensure the restored state is valid
+          dispatch({ type: "RESTORE_STATE", payload: restoredState });
+          alert("State restored successfully!");
+        }
+      } catch (error) {
+        console.error("Failed to parse JSON:", error);
+        alert("Failed to restore state. The file might be corrupted.");
+      }
+    };
+    reader.readAsText(file);
   };
 
   return (
@@ -66,6 +93,18 @@ export default function LearnerSelectionScreen() {
           />
           <Button type="submit">Create</Button>
         </form>
+      </div>
+      <div className="text-center mt-8">
+        <Button variant="link" onClick={handleRestoreClick}>
+          Restore from Backup
+        </Button>
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          className="hidden"
+          accept=".json"
+        />
       </div>
     </div>
   );

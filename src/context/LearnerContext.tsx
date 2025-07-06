@@ -17,6 +17,7 @@ import type {
 // Define actions
 type Action =
   | { type: "LOAD_STATE"; payload: AppState }
+  | { type: "RESTORE_STATE"; payload: AppState }
   | { type: "ADD_LEARNER"; payload: Omit<LearnerState, "id"> }
   | { type: "SET_ACTIVE_LEARNER"; payload: string | null }
   | {
@@ -41,6 +42,8 @@ type Action =
 const appReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
     case "LOAD_STATE":
+      return action.payload;
+    case "RESTORE_STATE":
       return action.payload;
     case "ADD_LEARNER":
       const newLearner: LearnerState = {
