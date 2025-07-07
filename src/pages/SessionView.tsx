@@ -145,9 +145,7 @@ const SessionView = () => {
   return (
     <div className="p-4 flex flex-col items-center justify-between h-full">
       <header className="w-full">
-        <h1 className="text-2xl font-bold mb-2 text-center">
-          Session: {deckName}
-        </h1>
+        <h1 className="text-2xl font-bold mb-2 text-center">{deckName}</h1>
         <StatsDisplay
           correct={correctCount}
           incorrect={incorrectCount}
@@ -159,10 +157,7 @@ const SessionView = () => {
       </header>
 
       <main className="relative flex-grow flex flex-col items-center justify-center w-full">
-        <CardPresenter card={currentCard} />
-        <div className="mt-8 h-16 w-full max-w-sm bg-slate-100 rounded-lg flex items-center justify-center text-3xl font-mono">
-          {currentAnswer || " "}
-        </div>
+        <CardPresenter card={currentCard} currentAnswer={currentAnswer} />
         <FeedbackOverlay
           status={feedbackStatus}
           card={currentCard}

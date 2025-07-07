@@ -4,14 +4,15 @@ import SpellingCardView from "./SpellingCardView";
 
 interface CardPresenterProps {
   card: AnyCard;
+  currentAnswer: string;
 }
 
-const CardPresenter = ({ card }: CardPresenterProps) => {
+const CardPresenter = ({ card, currentAnswer }: CardPresenterProps) => {
   switch (card.type) {
     case "math":
-      return <MathCardView card={card} />;
+      return <MathCardView card={card} currentAnswer={currentAnswer} />;
     case "spelling":
-      return <SpellingCardView card={card} />;
+      return <SpellingCardView card={card} currentAnswer={currentAnswer} />;
     default:
       return <div>Unknown card type</div>;
   }
