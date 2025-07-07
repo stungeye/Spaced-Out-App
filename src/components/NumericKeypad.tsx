@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
 
 interface NumericKeypadProps {
   onKeyPress: (key: string) => void;
@@ -24,11 +23,15 @@ const NumericKeypad = ({ onKeyPress, onSubmit }: NumericKeypadProps) => {
       <Button
         onClick={() => onKeyPress("backspace")}
         variant="outline"
-        className="h-16"
+        className="h-16 bg-orange-100 text-orange-800 hover:bg-orange-200 active:bg-orange-300"
       >
-        <ArrowLeftIcon className="h-8 w-8" />
+        <span className="sr-only">Backspace</span>
+        <span className="text-2xl">&larr;</span>
       </Button>
-      <Button onClick={onSubmit} className="h-16 col-span-2 text-xl">
+      <Button
+        onClick={onSubmit}
+        className="text-xl h-16 bg-green-100 text-green-800 hover:bg-green-200 active:bg-green-300 "
+      >
         Submit
       </Button>
     </div>

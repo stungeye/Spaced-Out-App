@@ -46,14 +46,18 @@ const OnScreenKeyboard = ({ onKeyPress, onSubmit }: OnScreenKeyboardProps) => {
         <Button
           onClick={() => onKeyPress("backspace")}
           variant="outline"
-          className="h-10 flex-1 basis-0 p-1 sm:h-12 sm:p-2"
+          className="sm:text-xl h-10 flex-1 basis-0 p-1 sm:h-12 sm:p-2 bg-orange-100 text-orange-800 hover:bg-orange-200 active:bg-orange-300"
         >
-          <ArrowLeftIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+          <span className="sr-only">Backspace</span>
+          <span className="text-2xl">&larr;</span>
+        </Button>
+        <Button
+          onClick={onSubmit}
+          className="sm:text-xl h-10 flex-1 basis-0 p-1 sm:h-12 sm:p-2 bg-green-100 text-green-800 hover:bg-green-200 active:bg-green-300"
+        >
+          Submit
         </Button>
       </div>
-      <Button onClick={onSubmit} className="h-12 w-full max-w-sm mt-2 text-xl">
-        Submit
-      </Button>
     </div>
   );
 };
