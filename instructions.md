@@ -279,6 +279,7 @@ App
 - **Error Handling:** Wrap TTS speech synthesis in a `try...catch` block as it can sometimes fail.
 - **Code Organization:** Keep related files together (e.g., a component and its associated CSS module). Use a `lib` or `utils` directory for shared logic like the Leitner system.
 - **Comments:** Add comments to explain the "why" behind complex code, especially for the Leitner system implementation and state management logic.
+- **Viewport:** The app should be screensize responsive down to a minimum width of 360px.
 
 ## 8\. Notes on Card ID and Location Assignment
 
