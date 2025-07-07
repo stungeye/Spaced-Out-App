@@ -131,6 +131,18 @@ const SettingsPage = () => {
     return `Unscheduled: ${unscheduledCount}, ${boxStatsString}`;
   };
 
+  const handleDeleteAllData = () => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete all data? This action cannot be undone."
+      )
+    ) {
+      localStorage.clear();
+      alert("All data has been deleted.");
+      window.location.reload();
+    }
+  };
+
   if (!learner) {
     return <div>Learner not found.</div>;
   }
@@ -199,6 +211,17 @@ const SettingsPage = () => {
                 <p>Box stats: {getBoxStats(deck)}</p>
               </div>
             ))}
+          </div>
+          <div className="mt-8 p-4 border border-destructive rounded-lg">
+            <h3 className="text-lg font-semibold text-destructive">
+              Danger Zone
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              These actions can lead to data loss.
+            </p>
+            <Button variant="destructive" onClick={handleDeleteAllData}>
+              Delete All Data
+            </Button>
           </div>
         </div>
       )}
