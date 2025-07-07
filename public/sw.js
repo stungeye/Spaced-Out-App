@@ -1,5 +1,10 @@
 const CACHE_NAME = "spaced-out-app-v2"; // Increment cache version
-const STATIC_ASSETS = ["/", "/index.html", "/icon192-v2.png", "/icon512-v2.png"];
+const STATIC_ASSETS = [
+  "/",
+  "/index.html",
+  "/icon192-v2.png",
+  "/icon512-v2.png",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
