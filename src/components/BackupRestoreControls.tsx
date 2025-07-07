@@ -49,7 +49,7 @@ const BackupRestoreControls = () => {
     <div className="p-4 border rounded-lg">
       <h2 className="text-xl font-semibold mb-2">Backup & Restore</h2>
       <p className="text-sm text-muted-foreground mb-4">
-        Save your current progress to a file or restore from a backup.
+        Save or restore progress to/from backup files.
       </p>
       <div className="flex gap-4">
         <Button onClick={handleBackup}>Backup</Button>
