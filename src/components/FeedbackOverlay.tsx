@@ -35,7 +35,7 @@ const FeedbackOverlay = ({
             <h2 className="text-2xl font-bold text-destructive">Incorrect</h2>
           </div>
           <div className="mb-4">
-            <CardPresenter card={card} />
+            <CardPresenter card={card} currentAnswer="" />
           </div>
           <div className="grid grid-cols-2 gap-4 text-left">
             <div>
