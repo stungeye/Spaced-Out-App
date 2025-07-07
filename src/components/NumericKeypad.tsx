@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
 interface NumericKeypadProps {
   onKeyPress: (key: string) => void;
@@ -8,6 +9,26 @@ interface NumericKeypadProps {
 const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 
 const NumericKeypad = ({ onKeyPress, onSubmit }: NumericKeypadProps) => {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const key = event.key;
+
+      if (keys.includes(key)) {
+        onKeyPress(key);
+      } else if (key === "Backspace") {
+        onKeyPress("backspace");
+      } else if (key === "Enter") {
+        onSubmit();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onKeyPress, onSubmit]);
+
   return (
     <div className="grid grid-cols-3 gap-2 w-full max-w-xs mx-auto">
       {keys.map((key) => (
@@ -15,7 +36,7 @@ const NumericKeypad = ({ onKeyPress, onSubmit }: NumericKeypadProps) => {
           key={key}
           onClick={() => onKeyPress(key)}
           variant="outline"
-          className="text-2xl h-16"
+          className="text-2xl h-16 active:bg-gray-300"
         >
           {key}
         </Button>
