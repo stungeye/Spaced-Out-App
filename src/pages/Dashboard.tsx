@@ -42,7 +42,12 @@ export default function Dashboard() {
               >
                 <h3 className="font-bold text-lg">{deck.name}</h3>
                 <p className="text-sm text-gray-500">{deck.type}</p>
-                <p className="text-sm mt-2">{deck.cards.length} cards</p>
+                <p className="text-sm mt-2">
+                  Session {deck.sessionIndex} with {deck.cards.length} cards
+                  total.{" "}
+                  {deck.cards.filter((c) => c.location === "Deck New").length}{" "}
+                  are unseen.
+                </p>
               </div>
             ))}
           </div>
