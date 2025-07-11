@@ -9,9 +9,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { useLearnerContext } from "@/context/LearnerContext";
 import { getDueCards, buildSessionQueue } from "@/lib/leitner";
+import {
+  SESSION_QUOTAS,
+  DEFAULT_QUOTA_INDEX,
+  CARD_LOCATIONS,
+} from "@/lib/constants";
+import { isDeckCompleted } from "@/lib/utils";
+import { actionCreators } from "@/lib/actionCreators";
 import type { Deck, AnyCard } from "@/lib/types";
 import { useState, useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useCurrentLearner } from "@/hooks/useCurrentLearner";
 
 interface SessionSetupModalProps {
   isOpen: boolean;
@@ -19,30 +27,24 @@ interface SessionSetupModalProps {
   deck: Deck | null;
 }
 
-const QUOTAS = [5, 10, 20, 40, 80];
+const QUOTAS = SESSION_QUOTAS;
 
 export default function SessionSetupModal({
   isOpen,
   onOpenChange,
   deck,
 }: SessionSetupModalProps) {
-  const { state, dispatch } = useLearnerContext();
-  const { learnerId } = useParams<{ learnerId: string }>();
+  const { dispatch } = useLearnerContext();
+  const { learner, learnerId } = useCurrentLearner();
   const navigate = useNavigate();
-  const [selectedQuota, setSelectedQuota] = useState(QUOTAS[1]);
+  const [selectedQuota, setSelectedQuota] = useState<(typeof QUOTAS)[number]>(
+    QUOTAS[DEFAULT_QUOTA_INDEX]
+  );
 
   const isCompleted = useMemo(() => {
     if (!deck) return false;
-    return (
-      deck.cards.length > 0 &&
-      deck.cards.every((c) => c.location === "Deck Retired")
-    );
+    return isDeckCompleted(deck);
   }, [deck]);
-
-  const learner = useMemo(
-    () => state.learners.find((l) => l.id === learnerId),
-    [state.learners, learnerId]
-  );
 
   const { sessionQueue, newCardsAdded } = useMemo(() => {
     if (!deck) return { sessionQueue: [], newCardsAdded: [] };
@@ -56,14 +58,13 @@ export default function SessionSetupModal({
     if (!deck || !learner || sessionQueue.length === 0) return;
 
     if (newCardsAdded.length > 0) {
-      dispatch({
-        type: "UPDATE_CARD_LOCATIONS",
-        payload: {
-          learnerId: learner.id,
-          cardIds: newCardsAdded.map((c) => c.id),
-          newLocation: "Deck Current",
-        },
-      });
+      dispatch(
+        actionCreators.updateCardLocations(
+          learner.id,
+          newCardsAdded.map((c) => c.id),
+          CARD_LOCATIONS.CURRENT
+        )
+      );
     }
 
     // Navigate to the session view, passing the queue in the route's state
@@ -74,13 +75,7 @@ export default function SessionSetupModal({
 
   const handleResetDeck = () => {
     if (!deck || !learnerId) return;
-    dispatch({
-      type: "RESET_DECK",
-      payload: {
-        learnerId,
-        deckId: deck.id,
-      },
-    });
+    dispatch(actionCreators.resetDeck(learnerId, deck.id));
     onOpenChange(false);
   };
 

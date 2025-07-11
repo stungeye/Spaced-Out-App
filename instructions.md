@@ -283,6 +283,25 @@ App
 - [x] Added a confetti "boom" effect for each correct answer to provide positive feedback.
 - [x] Added a confetti "fall" effect to the deck completion screen to celebrate mastery.
 
+### Step 11: Code Quality & Refactoring (Completed)
+
+- [x] **Constants Management:** Centralized all configuration values (session quotas, timing constants, storage keys, card locations) in `lib/constants.ts` to eliminate magic numbers and improve maintainability.
+- [x] **Custom Hooks:** Created reusable hooks for better separation of concerns:
+  - `useSessionState`: Encapsulates all session-related logic, making `SessionView` cleaner and more focused
+  - `useCurrentLearner`: Memoizes learner lookup and eliminates code duplication across components
+- [x] **Action Creators:** Implemented typed action creators in `lib/actionCreators.ts` for type-safe state management and consistent dispatch patterns throughout the application.
+- [x] **Utility Functions:** Enhanced `lib/utils.ts` with helper functions for common operations:
+  - ID generation for learners and cards
+  - Deck completion checking and statistics calculation
+  - Answer normalization and comparison
+  - Safe localStorage operations with error handling
+- [x] **Performance Optimizations:**
+  - Added proper memoization using `useMemo` for expensive computations
+  - Implemented `useCallback` for event handlers to prevent unnecessary re-renders
+  - Replaced inline calculations with optimized utility functions
+- [x] **Type Safety Improvements:** Enhanced TypeScript usage with better typing for constants, exported Action types from context, and proper typing for state setters.
+- [x] **Code Consistency:** Replaced all magic strings with constants, standardized dispatch calls to use action creators, and ensured uniform patterns across all components.
+
 ## 7\. Best Practices to Follow
 
 - **Component Purity:** Keep components as pure as possible. Logic should be handled in event handlers or hooks, not during the render cycle.

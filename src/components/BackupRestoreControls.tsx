@@ -1,4 +1,5 @@
 import { useLearnerContext } from "@/context/LearnerContext";
+import { actionCreators } from "@/lib/actionCreators";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -34,7 +35,7 @@ const BackupRestoreControls = () => {
         if (typeof text === "string") {
           const restoredState = JSON.parse(text);
           // TODO: Add validation to ensure the restored state is valid
-          dispatch({ type: "RESTORE_STATE", payload: restoredState });
+          dispatch(actionCreators.restoreState(restoredState));
           alert("State restored successfully!");
         }
       } catch (error) {

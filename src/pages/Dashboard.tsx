@@ -1,6 +1,7 @@
-import { useLearnerContext } from "@/context/LearnerContext";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useState, useMemo, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import { useCurrentLearner } from "@/hooks/useCurrentLearner";
+import { isDeckCompleted, getDeckStats } from "@/lib/utils";
 import type { Deck } from "@/lib/types";
 import SessionSetupModal from "@/components/SessionSetupModal";
 import {
@@ -14,8 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 export default function Dashboard() {
-  const { state } = useLearnerContext();
-  const { learnerId } = useParams<{ learnerId: string }>();
+  const { learner } = useCurrentLearner();
   const location = useLocation();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,15 +32,10 @@ export default function Dashboard() {
     }
   }, [location.state, location.pathname, navigate]);
 
-  const learner = useMemo(
-    () => state.learners.find((l) => l.id === learnerId),
-    [state.learners, learnerId]
-  );
-
-  const handleOpenModal = (deck: Deck) => {
+  const handleOpenModal = useCallback((deck: Deck) => {
     setSelectedDeck(deck);
     setIsModalOpen(true);
-  };
+  }, []);
 
   if (!learner) {
     return <div>Learner not found.</div>;
@@ -57,9 +52,8 @@ export default function Dashboard() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {learner.decks.map((deck) => {
-              const isCompleted =
-                deck.cards.length > 0 &&
-                deck.cards.every((c) => c.location === "Deck Retired");
+              const isCompleted = isDeckCompleted(deck);
+              const stats = getDeckStats(deck);
 
               return (
                 <div
@@ -77,14 +71,8 @@ export default function Dashboard() {
                   </h3>
                   <p className="text-sm text-gray-500">{deck.type}</p>
                   <p className="text-sm mt-2">
-                    Session {deck.sessionIndex} with {deck.cards.length} cards
-                    total.{" "}
-                    {deck.cards.filter((c) => c.location === "Deck New").length}{" "}
-                    are unseen. Retired:{" "}
-                    {
-                      deck.cards.filter((c) => c.location === "Deck Retired")
-                        .length
-                    }
+                    Session {deck.sessionIndex} with {stats.total} cards total.{" "}
+                    {stats.new} are unseen. {stats.retired} are retired.
                   </p>
                 </div>
               );

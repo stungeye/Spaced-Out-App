@@ -1,4 +1,5 @@
 import { useLearnerContext } from "@/context/LearnerContext";
+import { actionCreators } from "@/lib/actionCreators";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -17,13 +18,13 @@ export default function LearnerSelectionScreen() {
         sessionIndex: 0,
         decks: [],
       };
-      dispatch({ type: "ADD_LEARNER", payload: newLearner });
+      dispatch(actionCreators.addLearner(newLearner));
       setNewLearnerName("");
     }
   };
 
   const selectLearner = (learnerId: string) => {
-    dispatch({ type: "SET_ACTIVE_LEARNER", payload: learnerId });
+    dispatch(actionCreators.setActiveLearner(learnerId));
     navigate(`/${learnerId}/dashboard`);
   };
 
@@ -42,7 +43,7 @@ export default function LearnerSelectionScreen() {
         if (typeof text === "string") {
           const restoredState = JSON.parse(text);
           // TODO: Add validation to ensure the restored state is valid
-          dispatch({ type: "RESTORE_STATE", payload: restoredState });
+          dispatch(actionCreators.restoreState(restoredState));
           alert("State restored successfully!");
         }
       } catch (error) {

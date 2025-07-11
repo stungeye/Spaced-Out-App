@@ -2,6 +2,8 @@ import BackupRestoreControls from "@/components/BackupRestoreControls";
 import { useLearnerContext } from "@/context/LearnerContext";
 import { useParams, useLocation } from "react-router-dom";
 import { useState, useMemo, useEffect } from "react";
+import { actionCreators } from "@/lib/actionCreators";
+import { CARD_LOCATIONS } from "@/lib/constants";
 import type { Deck } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -63,10 +65,7 @@ const SettingsPage = () => {
         deckData.type &&
         Array.isArray(deckData.cards)
       ) {
-        dispatch({
-          type: "ADD_DECK",
-          payload: { learnerId: learner.id, deck: deckData },
-        });
+        dispatch(actionCreators.addDeck(learner.id, deckData));
         setIsPreloadedModalOpen(false); // Close modal on success
       } else {
         alert("Invalid deck file format.");
@@ -98,10 +97,7 @@ const SettingsPage = () => {
           alert("This deck has already been added.");
           return;
         }
-        dispatch({
-          type: "ADD_DECK",
-          payload: { learnerId: learner.id, deck: deckData },
-        });
+        dispatch(actionCreators.addDeck(learner.id, deckData));
       } else {
         alert("Invalid deck file format.");
       }
@@ -116,7 +112,7 @@ const SettingsPage = () => {
     let unscheduledCount = 0;
 
     deck.cards.forEach((card) => {
-      if (card.location === "Deck New") {
+      if (card.location === CARD_LOCATIONS.NEW) {
         unscheduledCount++;
       } else if (card.location.includes("-")) {
         // This is a Leitner box

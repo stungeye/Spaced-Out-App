@@ -1,4 +1,5 @@
 import type { AnyCard, CardLocation, Deck } from "./types";
+import { CARD_LOCATIONS } from "./constants";
 
 /**
  * The 10 numbered boxes for the Leitner system variant.
@@ -30,7 +31,7 @@ export function getDueCards(decks: Deck[], sessionIndex: number): AnyCard[] {
 
   for (const deck of decks) {
     for (const card of deck.cards) {
-      if (card.location === "Deck Current") {
+      if (card.location === CARD_LOCATIONS.CURRENT) {
         dueCards.push(card);
       } else if (LEITNER_BOXES.includes(card.location)) {
         if (card.location.includes(sessionDigit)) {
@@ -92,7 +93,9 @@ export function buildSessionQueue(
     const needed = quota - dueCards.length;
 
     // Find new, unseen cards to fill the remaining quota.
-    const newCards = allCards.filter((card) => card.location === "Deck New");
+    const newCards = allCards.filter(
+      (card) => card.location === CARD_LOCATIONS.NEW
+    );
     const cardsToAdd = newCards.slice(0, needed);
 
     sessionQueue.push(...cardsToAdd);
@@ -115,7 +118,9 @@ export function findNextSession(deck: Deck, startSessionIndex: number): number {
   // If there are cards in 'Deck Current' or 'Deck New', any session can be started.
   // 'Deck Current' cards are always due, and 'Deck New' cards can fill any session.
   const hasAlwaysAvailableCards = deck.cards.some(
-    (card) => card.location === "Deck Current" || card.location === "Deck New"
+    (card) =>
+      card.location === CARD_LOCATIONS.CURRENT ||
+      card.location === CARD_LOCATIONS.NEW
   );
 
   if (hasAlwaysAvailableCards) {
@@ -152,7 +157,10 @@ export function gradeCard(
   const sessionDigit = String(sessionIndex);
 
   if (isCorrect) {
-    if (currentLoc === "Deck Current" || currentLoc === "Deck New") {
+    if (
+      currentLoc === CARD_LOCATIONS.CURRENT ||
+      currentLoc === CARD_LOCATIONS.NEW
+    ) {
       // Correctly answered card from the current deck moves to the first box corresponding to the session index.
       const targetBox = LEITNER_BOXES.find((box) =>
         box.startsWith(sessionDigit)
@@ -161,15 +169,15 @@ export function gradeCard(
     } else if (LEITNER_BOXES.includes(currentLoc)) {
       // If the last digit of its box matches the session, it's retired.
       if (currentLoc.endsWith(sessionDigit)) {
-        return "Deck Retired";
+        return CARD_LOCATIONS.RETIRED;
       }
       // Otherwise, it stays in its current box.
       return currentLoc;
     }
   } else {
     // Any incorrect answer moves the card back to the current deck.
-    if (currentLoc !== "Deck Current") {
-      return "Deck Current";
+    if (currentLoc !== CARD_LOCATIONS.CURRENT) {
+      return CARD_LOCATIONS.CURRENT;
     }
   }
 

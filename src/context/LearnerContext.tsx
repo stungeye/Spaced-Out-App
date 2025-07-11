@@ -5,6 +5,8 @@ import React, {
   type ReactNode,
   useContext,
 } from "react";
+import { STORAGE_KEY, CARD_LOCATIONS } from "@/lib/constants";
+import { storage, generateLearnerId, generateCardId } from "@/lib/utils";
 import type {
   AppState,
   LearnerState,
@@ -15,7 +17,7 @@ import type {
 } from "../lib/types";
 
 // Define actions
-type Action =
+export type Action =
   | { type: "LOAD_STATE"; payload: AppState }
   | { type: "RESTORE_STATE"; payload: AppState }
   | { type: "ADD_LEARNER"; payload: Omit<LearnerState, "id"> }
@@ -49,7 +51,7 @@ const appReducer = (state: AppState, action: Action): AppState => {
     case "ADD_LEARNER":
       const newLearner: LearnerState = {
         ...action.payload,
-        id: `learner-${new Date().toISOString()}`,
+        id: generateLearnerId(),
       };
       return {
         ...state,
@@ -149,10 +151,10 @@ const appReducer = (state: AppState, action: Action): AppState => {
         sessionIndex: 0,
         cards: deck.cards.map((card) => ({
           ...card,
-          id: `card-${Math.random().toString(36).substr(2, 9)}-${Date.now()}`,
+          id: generateCardId(),
           deckId: deck.id,
           type: deck.type, // This was the missing piece
-          location: "Deck New",
+          location: CARD_LOCATIONS.NEW,
         })) as AnyCard[],
       };
 
@@ -189,7 +191,7 @@ export const LearnerContext = createContext<
 export const LearnerProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(appReducer, initialState, (initial) => {
     try {
-      const storedState = localStorage.getItem("spaced-out-app-state");
+      const storedState = storage.get(STORAGE_KEY);
       if (storedState) {
         const parsedState = JSON.parse(storedState);
         if (parsedState && Array.isArray(parsedState.learners)) {
@@ -197,22 +199,18 @@ export const LearnerProvider = ({ children }: { children: ReactNode }) => {
         }
       }
       // If no valid state in localStorage, initialize it with the default state.
-      localStorage.setItem("spaced-out-app-state", JSON.stringify(initial));
+      storage.set(STORAGE_KEY, JSON.stringify(initial));
       return initial;
     } catch (error) {
       console.error("Error initializing state from localStorage", error);
       // If error, still try to set a default state
-      localStorage.setItem("spaced-out-app-state", JSON.stringify(initial));
+      storage.set(STORAGE_KEY, JSON.stringify(initial));
       return initial;
     }
   });
 
   useEffect(() => {
-    try {
-      localStorage.setItem("spaced-out-app-state", JSON.stringify(state));
-    } catch (error) {
-      console.error("Error writing state to localStorage", error);
-    }
+    storage.set(STORAGE_KEY, JSON.stringify(state));
   }, [state]);
 
   return (
