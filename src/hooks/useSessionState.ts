@@ -67,7 +67,7 @@ export const useSessionState = ({
   const resetCardState = () => {
     setCurrentAnswer("");
     setFeedbackStatus(null);
-    setShowConfetti(false);
+    //setShowConfetti(false);
   };
 
   const advanceToNextCard = (updatedDeck?: Deck) => {
@@ -99,6 +99,8 @@ export const useSessionState = ({
   const handleSubmit = () => {
     if (!learner || !deck || feedbackStatus || !currentCard) return;
 
+    setShowConfetti(false);
+
     const isCorrect = answersMatch(currentAnswer, currentCard.answer);
 
     // Play sound and show feedback
@@ -107,7 +109,7 @@ export const useSessionState = ({
 
     // Update stats
     if (isCorrect) {
-      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(true), 40);
       setCorrectCount((prev) => prev + 1);
       setStreak((prev) => prev + 1);
     } else {
