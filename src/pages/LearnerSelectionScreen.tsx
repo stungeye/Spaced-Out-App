@@ -3,12 +3,25 @@ import { actionCreators } from "@/lib/actionCreators";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useFileUpload } from "@/hooks/useFileUpload";
 
 export default function LearnerSelectionScreen() {
   const { state, dispatch } = useLearnerContext();
   const [newLearnerName, setNewLearnerName] = useState("");
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { handleFileChange } = useFileUpload({
+    accept: ".json",
+    onSuccess: (data) => {
+      // TODO: Add validation to ensure the restored state is valid
+      dispatch(actionCreators.restoreState(data as any));
+      alert("State restored successfully!");
+    },
+    onError: (error) => {
+      alert(`Failed to restore state: ${error}`);
+    },
+  });
 
   const handleAddLearner = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,28 +43,6 @@ export default function LearnerSelectionScreen() {
 
   const handleRestoreClick = () => {
     fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const text = e.target?.result;
-        if (typeof text === "string") {
-          const restoredState = JSON.parse(text);
-          // TODO: Add validation to ensure the restored state is valid
-          dispatch(actionCreators.restoreState(restoredState));
-          alert("State restored successfully!");
-        }
-      } catch (error) {
-        console.error("Failed to parse JSON:", error);
-        alert("Failed to restore state. The file might be corrupted.");
-      }
-    };
-    reader.readAsText(file);
   };
 
   return (

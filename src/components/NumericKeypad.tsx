@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { AppButton } from "@/components/AppButton";
 import { useEffect } from "react";
 
 interface NumericKeypadProps {
@@ -41,20 +42,23 @@ const NumericKeypad = ({ onKeyPress, onSubmit }: NumericKeypadProps) => {
           {key}
         </Button>
       ))}
-      <Button
+      <AppButton
         onClick={() => onKeyPress("backspace")}
         variant="outline"
-        className="h-16 bg-orange-100 text-orange-800 hover:bg-orange-200 active:bg-orange-300"
+        intent="warning"
+        appSize="keypad"
       >
         <span className="sr-only">Backspace</span>
         <span className="text-2xl">&larr;</span>
-      </Button>
-      <Button
+      </AppButton>
+      <AppButton
         onClick={onSubmit}
-        className="text-xl h-16 bg-green-100 text-green-800 hover:bg-green-200 active:bg-green-300 "
+        intent="success"
+        appSize="keypad"
+        className="text-xl"
       >
         Submit
-      </Button>
+      </AppButton>
     </div>
   );
 };

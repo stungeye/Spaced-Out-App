@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 import { useLearnerContext } from "@/context/LearnerContext";
 import { actionCreators } from "@/lib/actionCreators";
 import { gradeCard, findNextSession } from "@/lib/leitner";
@@ -22,8 +22,7 @@ export const useSessionState = ({
   deckName,
   deckId,
 }: UseSessionStateProps) => {
-  const navigate = useNavigate();
-  const { learnerId } = useParams<{ learnerId: string }>();
+  const { goToDashboard, learnerId } = useAppNavigation();
   const { state: appState, dispatch } = useLearnerContext();
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -93,7 +92,7 @@ export const useSessionState = ({
           )
         );
       }
-      navigate(`/${learnerId}/dashboard`);
+      goToDashboard();
     }
   };
 
@@ -181,6 +180,6 @@ export const useSessionState = ({
     advanceToNextCard,
 
     // Navigation
-    goToDashboard: () => navigate(`/${learnerId}/dashboard`),
+    goToDashboard,
   };
 };

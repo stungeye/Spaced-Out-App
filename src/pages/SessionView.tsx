@@ -1,10 +1,12 @@
 import { useLocation } from "react-router-dom";
 import Confetti from "react-confetti-boom";
 import { useSessionState } from "@/hooks/useSessionState";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 import CardPresenter from "@/components/CardPresenter";
 import InputController from "@/components/InputController";
 import FeedbackOverlay from "@/components/FeedbackOverlay";
 import StatsDisplay from "@/components/StatsDisplay";
+import { AppButton } from "@/components/AppButton";
 
 const SessionView = () => {
   const location = useLocation();
@@ -29,8 +31,10 @@ const SessionView = () => {
     handleSubmit,
     handleKeyPress,
     advanceToNextCard,
-    goToDashboard,
   } = useSessionState({ sessionQueue, deckName, deckId });
+
+  // Get the click handler version for buttons
+  const { goToDashboardHandler } = useAppNavigation();
 
   if (isDeckCompleted) {
     return (
@@ -43,12 +47,12 @@ const SessionView = () => {
           <p className="text-xl mb-6">
             You have mastered the <strong>{deckName}</strong> deck!
           </p>
-          <button
-            onClick={goToDashboard}
-            className="mt-4 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-lg"
+          <AppButton
+            onClick={goToDashboardHandler}
+            className="mt-4 px-6 py-3 text-lg"
           >
             Back to Dashboard
-          </button>
+          </AppButton>
         </div>
       </>
     );
@@ -58,12 +62,9 @@ const SessionView = () => {
     return (
       <div className="flex flex-col items-center justify-center h-full">
         <p className="text-xl">Session complete or no cards selected.</p>
-        <button
-          onClick={goToDashboard}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
+        <AppButton onClick={goToDashboardHandler} className="mt-4">
           Back to Dashboard
-        </button>
+        </AppButton>
       </div>
     );
   }
@@ -72,12 +73,9 @@ const SessionView = () => {
     return (
       <div className="flex flex-col items-center justify-center h-full">
         <p className="text-xl">No current card available.</p>
-        <button
-          onClick={goToDashboard}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
+        <AppButton onClick={goToDashboardHandler} className="mt-4">
           Back to Dashboard
-        </button>
+        </AppButton>
       </div>
     );
   }

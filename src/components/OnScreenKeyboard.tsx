@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { AppButton } from "@/components/AppButton";
 import { useCallback, useEffect } from "react";
 
 interface OnScreenKeyboardProps {
@@ -17,13 +17,14 @@ const Key = ({
   char: string;
   onClick: (key: string) => void;
 }) => (
-  <Button
+  <AppButton
     onClick={() => onClick(char)}
     variant="outline"
-    className="h-10 flex-1 basis-0 p-1 text-xs uppercase sm:h-12 sm:p-2 sm:text-sm active:bg-gray-300"
+    appSize="keyboard-key"
+    className="active:bg-gray-300"
   >
     {char}
-  </Button>
+  </AppButton>
 );
 
 const OnScreenKeyboard = ({ onKeyPress, onSubmit }: OnScreenKeyboardProps) => {
@@ -74,20 +75,23 @@ const OnScreenKeyboard = ({ onKeyPress, onSubmit }: OnScreenKeyboardProps) => {
         {bottomRow.split("").map((key) => (
           <Key key={key} char={key} onClick={onKeyPress} />
         ))}
-        <Button
+        <AppButton
           onClick={() => onKeyPress("backspace")}
           variant="outline"
-          className="sm:text-xl h-10 flex-1 basis-0 p-1 sm:h-12 sm:p-2 bg-orange-100 text-orange-800 hover:bg-orange-200 active:bg-orange-300"
+          intent="warning"
+          appSize="keyboard-key"
         >
           <span className="sr-only">Backspace</span>
           <span className="text-2xl">&larr;</span>
-        </Button>
-        <Button
+        </AppButton>
+        <AppButton
           onClick={onSubmit}
-          className="sm:text-xl h-10 flex-1 basis-0 p-1 sm:h-12 sm:p-2 bg-green-100 text-green-800 hover:bg-green-200 active:bg-green-300"
+          intent="success"
+          appSize="keyboard-key"
+          className="sm:text-xl"
         >
           Submit
-        </Button>
+        </AppButton>
       </div>
     </div>
   );

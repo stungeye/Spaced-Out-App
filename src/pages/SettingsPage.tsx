@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useAsyncOperation } from "@/hooks/useAsyncOperation";
+import { useFileUpload } from "@/hooks/useFileUpload";
 import { sanitizeAndValidateDeck } from "@/lib/validation";
 
 const SettingsPage = () => {
@@ -26,6 +27,28 @@ const SettingsPage = () => {
   >([]);
 
   const { execute: executeAsync } = useAsyncOperation();
+
+  const { handleFileChange } = useFileUpload({
+    accept: ".json",
+    onSuccess: (data: any) => {
+      if (!learner) return;
+
+      // Basic validation
+      if (data.id && data.name && data.type && Array.isArray(data.cards)) {
+        if (learner.decks.some((d: any) => d.id === data.id)) {
+          alert("This deck has already been added.");
+          return;
+        }
+        dispatch(actionCreators.addDeck(learner.id, data));
+      } else {
+        alert("Invalid deck file format.");
+      }
+    },
+    onError: (error) => {
+      console.error("Failed to load deck:", error);
+      alert("Failed to load deck file.");
+    },
+  });
 
   useEffect(() => {
     const fetchPreloadedDecks = async () => {
@@ -80,37 +103,6 @@ const SettingsPage = () => {
           ? error.message
           : "Failed to load preloaded deck.";
       alert(errorMessage);
-    }
-  };
-
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file || !learner) return;
-
-    try {
-      const text = await file.text();
-      const deckData = JSON.parse(text);
-
-      // Basic validation
-      if (
-        deckData.id &&
-        deckData.name &&
-        deckData.type &&
-        Array.isArray(deckData.cards)
-      ) {
-        if (learner.decks.some((d) => d.id === deckData.id)) {
-          alert("This deck has already been added.");
-          return;
-        }
-        dispatch(actionCreators.addDeck(learner.id, deckData));
-      } else {
-        alert("Invalid deck file format.");
-      }
-    } catch (error) {
-      console.error("Error loading deck from file:", error);
-      alert("Failed to load deck from file.");
     }
   };
 

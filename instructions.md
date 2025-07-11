@@ -316,6 +316,35 @@ App
 - [x] **Type Safety Improvements:** Enhanced TypeScript usage with better typing for constants, exported Action types from context, proper typing for state setters, and comprehensive validation interfaces.
 - [x] **Code Consistency:** Replaced all magic strings with constants, standardized dispatch calls to use action creators, ensured uniform patterns across all components, and implemented consistent error handling patterns.
 
+### Step 12: Advanced Refactoring & Component Patterns (Completed)
+
+- [x] **Button Component Consolidation:** Created a unified button system to eliminate style duplication:
+  - `lib/buttonVariants.ts`: Centralized button variant definitions using CVA (Class Variance Authority)
+  - `components/AppButton.tsx`: Enhanced button component extending shadcn Button with app-specific variants
+  - Updated `NumericKeypad` and `OnScreenKeyboard` to use semantic button variants (`success`, `warning`, `keypad`)
+  - Eliminated hardcoded button styles throughout the application
+- [x] **Unified Navigation Hook:** Implemented centralized navigation patterns:
+  - `hooks/useAppNavigation.ts`: Type-safe navigation hook with learner context
+  - Provides consistent navigation methods (`goToDashboard`, `goToSession`, `goToSettings`)
+  - Includes proper event handler versions for click events
+  - Updated all components to use unified navigation patterns
+- [x] **Session Status Logic Extraction:** Created reusable session status management:
+  - `hooks/useSessionStatus.ts`: Memoized session status calculations and progress tracking
+  - Encapsulates complex session logic with performance optimizations
+  - Provides clean interface for session progress information
+  - Type-safe return values with comprehensive session status data
+- [x] **File Upload Logic Consolidation:** Standardized file upload handling:
+  - `hooks/useFileUpload.ts`: Reusable file upload hook with consistent error handling
+  - Configurable validation and accept types
+  - Automatic file input cleanup and type-safe callbacks
+  - Updated `LearnerSelectionScreen` and `SettingsPage` to use unified file upload patterns
+- [x] **Component Refactoring Benefits:**
+  - Eliminated code duplication across navigation, file upload, and styling patterns
+  - Enhanced type safety with proper TypeScript usage throughout
+  - Improved maintainability through centralized common patterns
+  - Better performance with proper memoization strategies
+  - Consistent UX patterns across the entire application
+
 ## 7\. Best Practices to Follow
 
 - **Component Purity:** Keep components as pure as possible. Logic should be handled in event handlers or hooks, not during the render cycle.

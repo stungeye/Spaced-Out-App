@@ -18,7 +18,7 @@ import { isDeckCompleted } from "@/lib/utils";
 import { actionCreators } from "@/lib/actionCreators";
 import type { Deck, AnyCard } from "@/lib/types";
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 import { useCurrentLearner } from "@/hooks/useCurrentLearner";
 
 interface SessionSetupModalProps {
@@ -35,8 +35,8 @@ export default function SessionSetupModal({
   deck,
 }: SessionSetupModalProps) {
   const { dispatch } = useLearnerContext();
-  const { learner, learnerId } = useCurrentLearner();
-  const navigate = useNavigate();
+  const { learner } = useCurrentLearner();
+  const { goToSession } = useAppNavigation();
   const [selectedQuota, setSelectedQuota] = useState<(typeof QUOTAS)[number]>(
     QUOTAS[DEFAULT_QUOTA_INDEX]
   );
@@ -68,14 +68,16 @@ export default function SessionSetupModal({
     }
 
     // Navigate to the session view, passing the queue in the route's state
-    navigate(`/${learner.id}/session`, {
-      state: { queue: sessionQueue, deckName: deck.name, deckId: deck.id },
+    goToSession({
+      queue: sessionQueue,
+      deckName: deck.name,
+      deckId: deck.id,
     });
   };
 
   const handleResetDeck = () => {
-    if (!deck || !learnerId) return;
-    dispatch(actionCreators.resetDeck(learnerId, deck.id));
+    if (!deck || !learner) return;
+    dispatch(actionCreators.resetDeck(learner.id, deck.id));
     onOpenChange(false);
   };
 
