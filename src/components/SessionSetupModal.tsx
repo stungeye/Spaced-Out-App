@@ -44,11 +44,6 @@ export default function SessionSetupModal({
     [state.learners, learnerId]
   );
 
-  const dueCards = useMemo(() => {
-    if (!deck) return [];
-    return getDueCards([deck], deck.sessionIndex);
-  }, [deck]);
-
   const { sessionQueue, newCardsAdded } = useMemo(() => {
     if (!deck) return { sessionQueue: [], newCardsAdded: [] };
 
