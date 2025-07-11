@@ -13,6 +13,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useAsyncOperation } from "@/hooks/useAsyncOperation";
+import { sanitizeAndValidateDeck } from "@/lib/validation";
 
 const SettingsPage = () => {
   const { state, dispatch } = useLearnerContext();
@@ -23,18 +25,24 @@ const SettingsPage = () => {
     { id: string; name: string; path: string }[]
   >([]);
 
+  const { execute: executeAsync } = useAsyncOperation();
+
   useEffect(() => {
     const fetchPreloadedDecks = async () => {
-      try {
+      await executeAsync(async () => {
         const response = await fetch("/preloaded-decks.json");
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch preloaded decks: ${response.statusText}`
+          );
+        }
         const data = await response.json();
         setPreloadedDecks(data);
-      } catch (error) {
-        console.error("Failed to fetch preloaded decks:", error);
-      }
+        return data;
+      });
     };
     fetchPreloadedDecks();
-  }, []);
+  }, [executeAsync]);
 
   const isDebugMode = useMemo(() => {
     const searchParams = new URLSearchParams(search);
@@ -50,29 +58,28 @@ const SettingsPage = () => {
     if (!learner) return;
 
     try {
-      const response = await fetch(deckInfo.path);
-      const deckData = await response.json();
+      await executeAsync(async () => {
+        const response = await fetch(deckInfo.path);
+        if (!response.ok) {
+          throw new Error(`Failed to load deck: ${response.statusText}`);
+        }
+        const deckData = await response.json();
+        const validatedDeck = sanitizeAndValidateDeck(deckData);
 
-      if (learner.decks.some((d) => d.id === deckData.id)) {
-        alert("This deck has already been added.");
-        return;
-      }
+        if (learner.decks.some((d) => d.id === validatedDeck.id)) {
+          throw new Error("This deck has already been added.");
+        }
 
-      // Basic validation
-      if (
-        deckData.id &&
-        deckData.name &&
-        deckData.type &&
-        Array.isArray(deckData.cards)
-      ) {
-        dispatch(actionCreators.addDeck(learner.id, deckData));
-        setIsPreloadedModalOpen(false); // Close modal on success
-      } else {
-        alert("Invalid deck file format.");
-      }
+        dispatch(actionCreators.addDeck(learner.id, validatedDeck));
+        setIsPreloadedModalOpen(false);
+        return deckData;
+      });
     } catch (error) {
-      console.error("Error loading preloaded deck:", error);
-      alert("Failed to load preloaded deck.");
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to load preloaded deck.";
+      alert(errorMessage);
     }
   };
 

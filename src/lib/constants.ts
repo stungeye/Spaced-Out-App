@@ -29,3 +29,23 @@ export const CARD_LOCATIONS = {
   CURRENT: "Deck Current",
   RETIRED: "Deck Retired",
 } as const;
+
+// Leitner box labels for the 12-box system
+export const BOX_LABELS = [
+  "0-2-5-9",
+  "1-3-6-0",
+  "2-4-7-1",
+  "3-5-8-2",
+  "4-6-9-3",
+  "5-7-0-4",
+  "6-8-1-5",
+  "7-9-2-6",
+  "8-0-3-7",
+  "9-1-4-8",
+] as const;
+
+// Card type constants
+export const CARD_TYPES = {
+  MATH: "math",
+  SPELLING: "spelling",
+} as const;

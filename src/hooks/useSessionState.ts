@@ -5,7 +5,10 @@ import { actionCreators } from "@/lib/actionCreators";
 import { gradeCard, findNextSession } from "@/lib/leitner";
 import { playSound } from "@/lib/playSound";
 import { TIMING } from "@/lib/constants";
-import { isDeckCompleted as checkDeckCompleted } from "@/lib/utils";
+import {
+  isDeckCompleted as checkDeckCompleted,
+  answersMatch,
+} from "@/lib/utils";
 import type { AnyCard, Deck } from "@/lib/types";
 
 interface UseSessionStateProps {
@@ -97,9 +100,7 @@ export const useSessionState = ({
   const handleSubmit = () => {
     if (!learner || !deck || feedbackStatus || !currentCard) return;
 
-    const isCorrect =
-      currentAnswer.toLowerCase().trim() ===
-      currentCard.answer.toLowerCase().trim();
+    const isCorrect = answersMatch(currentAnswer, currentCard.answer);
 
     // Play sound and show feedback
     playSound(isCorrect);

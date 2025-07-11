@@ -4,15 +4,7 @@ import { useCurrentLearner } from "@/hooks/useCurrentLearner";
 import { isDeckCompleted, getDeckStats } from "@/lib/utils";
 import type { Deck } from "@/lib/types";
 import SessionSetupModal from "@/components/SessionSetupModal";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import DeckCompletionDialog from "@/components/DeckCompletionDialog";
 
 export default function Dashboard() {
   const { learner } = useCurrentLearner();
@@ -89,26 +81,11 @@ export default function Dashboard() {
         />
       )}
 
-      <Dialog
-        open={!!completedDeckName}
-        onOpenChange={() => setCompletedDeckName(null)}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Congratulations!</DialogTitle>
-            <DialogDescription>
-              You have successfully completed the{" "}
-              <strong>{completedDeckName}</strong> deck!
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-4">
-            <p>All cards have been moved to the "Retired" pile. Great job!</p>
-          </div>
-          <DialogFooter>
-            <Button onClick={() => setCompletedDeckName(null)}>Close</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeckCompletionDialog
+        isOpen={!!completedDeckName}
+        onClose={() => setCompletedDeckName(null)}
+        deckName={completedDeckName || ""}
+      />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App.tsx";
 import { LearnerProvider } from "./context/LearnerContext.tsx";
+import ErrorBoundary from "./components/ErrorBoundary.tsx";
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
@@ -20,10 +21,12 @@ if ("serviceWorker" in navigator) {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter>
-      <LearnerProvider>
-        <App />
-      </LearnerProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <LearnerProvider>
+          <App />
+        </LearnerProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   </StrictMode>
 );
