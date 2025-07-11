@@ -36,7 +36,8 @@ type Action =
         newLocation: CardLocation;
       };
     }
-  | { type: "ADD_DECK"; payload: { learnerId: string; deck: RawDeck } };
+  | { type: "ADD_DECK"; payload: { learnerId: string; deck: RawDeck } }
+  | { type: "RESET_DECK"; payload: { learnerId: string; deckId: string } };
 
 // Reducer function
 const appReducer = (state: AppState, action: Action): AppState => {
@@ -112,6 +113,30 @@ const appReducer = (state: AppState, action: Action): AppState => {
                       : card
                   ),
                 })),
+              }
+            : learner
+        ),
+      };
+    }
+    case "RESET_DECK": {
+      const { learnerId, deckId } = action.payload;
+      return {
+        ...state,
+        learners: state.learners.map((learner) =>
+          learner.id === learnerId
+            ? {
+                ...learner,
+                decks: learner.decks.map((deck) =>
+                  deck.id === deckId
+                    ? {
+                        ...deck,
+                        cards: deck.cards.map((card) => ({
+                          ...card,
+                          location: "Deck New",
+                        })),
+                      }
+                    : deck
+                ),
               }
             : learner
         ),

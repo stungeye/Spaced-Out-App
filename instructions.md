@@ -283,4 +283,22 @@ App
 
 ## 8\. Notes on Card ID and Location Assignment
 
-When a deck is first loaded from a JSON file, each card within it should be assigned a unique `id` (e.g., using a UUID library) and its `location` should be initialized to `'Deck New'`. The `deckId` from the parent deck should also be added to each card object.
+When a deck is first loaded from a JSON file, each card within it should be assigned a unique `id` and its `location` should be initialized to `'Deck New'`. The `deckId` from the parent deck should also be added to each card object.
+
+## 9\. Updates To Do
+
+Some more changes:
+When the user completes a deck (all cards retired) they should be congratulated for completing the deck.
+
+- On the dashboard decks should indicate if they are completed.
+- If a user tries to start a session on a completed deck they should be given the option to reset it to a blank state (all cards in "Deck New").
+
+We'll then do these, one but not yet:
+
+- Every time a user gets a card correct there should be a fun randomized pop of confetti on the screen.
+- The react-confetti-boom package is already installed.
+- Documentation: https://www.npmjs.com/package/react-confetti-boom
+- The package has two confetti modes, boom and fall.
+- The correct card confetti boom should be displayed to the full screen, not just within the feedback overlay component.
+- The confetti component can be used directly from within the session view.
+-

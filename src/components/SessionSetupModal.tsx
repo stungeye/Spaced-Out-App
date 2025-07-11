@@ -31,6 +31,14 @@ export default function SessionSetupModal({
   const navigate = useNavigate();
   const [selectedQuota, setSelectedQuota] = useState(QUOTAS[1]);
 
+  const isCompleted = useMemo(() => {
+    if (!deck) return false;
+    return (
+      deck.cards.length > 0 &&
+      deck.cards.every((c) => c.location === "Deck Retired")
+    );
+  }, [deck]);
+
   const learner = useMemo(
     () => state.learners.find((l) => l.id === learnerId),
     [state.learners, learnerId]
@@ -69,6 +77,46 @@ export default function SessionSetupModal({
     });
   };
 
+  const handleResetDeck = () => {
+    if (!deck || !learnerId) return;
+    dispatch({
+      type: "RESET_DECK",
+      payload: {
+        learnerId,
+        deckId: deck.id,
+      },
+    });
+    onOpenChange(false);
+  };
+
+  if (isCompleted) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Deck Completed!</DialogTitle>
+            <DialogDescription>
+              Congratulations on mastering the <strong>{deck?.name}</strong>{" "}
+              deck!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <p>
+              You've mastered all the cards! You can now reset the deck to start
+              practicing from the beginning again.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleResetDeck}>Reset Deck</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -79,11 +127,6 @@ export default function SessionSetupModal({
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
-          <p className="mb-4 text-center">
-            You have{" "}
-            <span className="font-bold text-lg">{dueCards.length}</span> cards
-            due for review.
-          </p>
           <div className="mb-4">
             <h4 className="font-semibold mb-2 text-center">
               How many cards do you want to practice?

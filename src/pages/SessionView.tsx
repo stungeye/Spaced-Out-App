@@ -36,6 +36,7 @@ const SessionView = () => {
   const [streak, setStreak] = useState(0);
   const [maxStreak, setMaxStreak] = useState(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isDeckCompleted, setIsDeckCompleted] = useState(false);
 
   useEffect(() => {
     if (streak > maxStreak) {
@@ -51,6 +52,25 @@ const SessionView = () => {
       }
     };
   }, []);
+
+  if (isDeckCompleted) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-4 text-center">
+        <h1 className="text-3xl font-bold text-green-500 mb-4">
+          Congratulations!
+        </h1>
+        <p className="text-xl mb-6">
+          You have mastered the <strong>{deckName}</strong> deck!
+        </p>
+        <button
+          onClick={() => navigate(`/${learnerId}/dashboard`)}
+          className="mt-4 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-lg"
+        >
+          Back to Dashboard
+        </button>
+      </div>
+    );
+  }
 
   if (!sessionQueue || sessionQueue.length === 0) {
     return (
@@ -141,6 +161,21 @@ const SessionView = () => {
       // For incorrect answers, the overlay is dismissible via click,
       // but we also set a long timeout as a fallback.
       timeoutRef.current = setTimeout(advanceToNextCard, 15000); // 15s delay
+    }
+
+    // Check for deck completion
+    const wasLastCardInSession = currentIndex === sessionQueue.length - 1;
+    const isDeckNowComplete =
+      newLocation === "Deck Retired" &&
+      deck.cards.every(
+        (c) => c.location === "Deck Retired" || c.id === card.id
+      );
+
+    if (wasLastCardInSession && isDeckNowComplete) {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      setIsDeckCompleted(true);
     }
   };
 
