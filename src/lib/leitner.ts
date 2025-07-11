@@ -104,6 +104,39 @@ export function buildSessionQueue(
 }
 
 /**
+ * Finds the next session index that will have cards to review.
+ * It iterates through session indices until it finds one with due cards,
+ * or it confirms new cards are available.
+ * @param deck - The deck to check.
+ * @param startSessionIndex - The session index to start searching from.
+ * @returns The next session index that will have cards.
+ */
+export function findNextSession(deck: Deck, startSessionIndex: number): number {
+  // If there are cards in 'Deck Current' or 'Deck New', any session can be started.
+  // 'Deck Current' cards are always due, and 'Deck New' cards can fill any session.
+  const hasAlwaysAvailableCards = deck.cards.some(
+    (card) => card.location === "Deck Current" || card.location === "Deck New"
+  );
+
+  if (hasAlwaysAvailableCards) {
+    return startSessionIndex;
+  }
+
+  // If not, find a session that has cards in its corresponding Leitner boxes.
+  let sessionIndex = startSessionIndex;
+  for (let i = 0; i < 10; i++) {
+    const dueCards = getDueCards([deck], sessionIndex);
+    if (dueCards.length > 0) {
+      return sessionIndex;
+    }
+    sessionIndex = (sessionIndex + 1) % 10;
+  }
+
+  // If no session has cards, return the original index.
+  return startSessionIndex;
+}
+
+/**
  * Determines the new location of a card after it has been graded.
  * @param card - The card that was reviewed.
  * @param isCorrect - Whether the answer was correct.

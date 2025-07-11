@@ -2,7 +2,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import type { AnyCard } from "@/lib/types";
 import { useLearnerContext } from "@/context/LearnerContext";
-import { gradeCard } from "@/lib/leitner";
+import { gradeCard, findNextSession } from "@/lib/leitner";
 import { playSound } from "@/lib/playSound";
 import CardPresenter from "@/components/CardPresenter";
 import InputController from "@/components/InputController";
@@ -89,12 +89,16 @@ const SessionView = () => {
     } else {
       // Session finished
       if (learner && deck) {
+        const nextSessionIndex = findNextSession(
+          deck,
+          (deck.sessionIndex + 1) % 10
+        );
         dispatch({
           type: "SET_SESSION_INDEX",
           payload: {
             learnerId: learner.id,
             deckId: deck.id,
-            sessionIndex: (deck.sessionIndex + 1) % 10,
+            sessionIndex: nextSessionIndex,
           },
         });
       }
@@ -132,7 +136,7 @@ const SessionView = () => {
     });
 
     if (isCorrect) {
-      timeoutRef.current = setTimeout(advanceToNextCard, 2000); // 2s delay
+      timeoutRef.current = setTimeout(advanceToNextCard, 1000); // 1s delay
     } else {
       // For incorrect answers, the overlay is dismissible via click,
       // but we also set a long timeout as a fallback.
