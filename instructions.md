@@ -271,6 +271,12 @@ App
 - [x] When cards are answered incorrectly the user should be shown the question along with the correct answer.
 - [x] Ensure the entire application is responsive and looks good on both desktop and mobile devices.
 
+### Step 9: Deck Completion Flow (Completed)
+
+- [x] Indicate on the `Dashboard` when a deck is fully completed (all cards are in "Deck Retired").
+- [x] When a user attempts to start a session with a completed deck, show a dialog allowing them to reset the deck's progress.
+- [x] Immediately after a session in which the final card is retired, display a congratulatory message on the `SessionView`.
+
 ## 7\. Best Practices to Follow
 
 - **Component Purity:** Keep components as pure as possible. Logic should be handled in event handlers or hooks, not during the render cycle.
@@ -287,11 +293,10 @@ When a deck is first loaded from a JSON file, each card within it should be assi
 
 ## 9\. Updates To Do
 
-Some more changes:
-When the user completes a deck (all cards retired) they should be congratulated for completing the deck.
-
-- On the dashboard decks should indicate if they are completed.
-- If a user tries to start a session on a completed deck they should be given the option to reset it to a blank state (all cards in "Deck New").
+- There's a bug where a learner will sometimes get stuck on a deck session where there are no cards to review.
+- In this state there a no "Deck Current" or "Deck New" cards, and the current session index points to boxes that are empty.
+- When the session index in updated (after a session) we need to ensure that if there are no "Deck Current" or "Deck New" cards, that the session index is incremented until it points to boxes that contain cards.
+- Remember that the session index "points to" boxes when the index number appears in the box name.
 
 We'll then do these, one but not yet:
 
@@ -301,4 +306,3 @@ We'll then do these, one but not yet:
 - The package has two confetti modes, boom and fall.
 - The correct card confetti boom should be displayed to the full screen, not just within the feedback overlay component.
 - The confetti component can be used directly from within the session view.
--
